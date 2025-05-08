@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  vue-app:
+    build: .
+    ports:
+      - "8080:80"  # localhost:8080 maps to nginx port 80
+    container_name: vue-container
