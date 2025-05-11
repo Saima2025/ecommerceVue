@@ -4,7 +4,6 @@ import FooterComponent from '../components/Footer.vue'
 
 <template>
     <main >
-        <!-- ref="addProd" -->
         <div class='py-20 px-4'>
             <div class='text-white max-w-6xl mx-auto py-2'>
                 <div class='grid md:grid-cols-2 gap-20 grid-cols-1'>
@@ -57,10 +56,6 @@ import FooterComponent from '../components/Footer.vue'
                                 <div>
                                     <span class='text-gray-700 text-2xl font-san'>&yen;{{ product.price }}</span>
                                 </div>
-
-                                <!-- <div @click="addProduct()" class='bg-gray-900 cursor-pointer text-white w-full text-sm font-semibold py-3 flex justify-center cursor pointer hover:bg-white hover:border hover:border-gray-900 hover:text-black '>
-                                    ADD TO CART
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -73,8 +68,7 @@ import FooterComponent from '../components/Footer.vue'
 </template>
 
 <script>
-import { apiHeader } from '../services/api' // adjust path to where you defined apiHeader
-// import axios from 'axios'
+import { apiHeader } from '../services/api' 
 
 export default {
     activated() {
@@ -113,11 +107,8 @@ export default {
     },
     methods:{
         onImageError(event) {
-            event.target.src = '../assets/hoodie.png'; // Replace with your fallback image path
+            event.target.src = '../assets/hoodie.png';
         }
-        // addProduct(){
-        //     this.$emit('addP',this.variants_id)
-        // }
     }
 }
 </script>

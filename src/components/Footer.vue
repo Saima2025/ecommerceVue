@@ -4,14 +4,6 @@
             <div class="font-extrabold text-4xl text-center space-y-3">
                 <div class="">Join Our Wait List And Get</div>
                 <div class="text-red-custom">Discount Up to 50%</div>
-                <!-- <div class="">
-                    <div class="py-1 flex relative max-w-xl mx-auto">
-                        <input type="text" placeholder="Enter Your Email Here" class="text-sm border w-full pr-52 focus:ring-red-400 focus:border-red-400 relative px-5 placeholder-gray-400 py-6 -right-1 border-red-400 rounded-lg flex-grow">
-                        <span class="bg-btn-color absolute text-base -right-1 uppercase rounded-lg z-10 text-white px-16 py-6 bg-opacity-25" style="top: 5px">
-                            sign in
-                        </span>
-                    </div>
-                </div> -->
             </div>
         </div>
         <div class="bg-purple-800 py-32 PX-4">

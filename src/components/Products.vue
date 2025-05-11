@@ -15,7 +15,7 @@
         />
 
         <div class="grid gap-20 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-3">
-          <div v-for="(product, i) in fetchData" :key="i" class="rounded-lg shadow-xl">
+          <div v-for="product in fetchData" :key="product.item_id" class="rounded-lg shadow-xl">
             <!-- navigate to product details page -->
             <router-link :to="{ name: 'single-product', params: { id: product?.item_id ,platform: product?.platform}}">
               <div class="bg-white w-full flex justify-center items-center">
@@ -26,6 +26,37 @@
                 <div>&yen; {{ product.price }}</div>
               </div>
             </router-link>
+          </div>
+        </div>
+        <!-- <button @click="previousPage" :disabled="currentPage === 0">Previous</button>
+        <button @click="nextPage" :disabled="(currentPage + 1) * resultsPerPage >= totalResults">
+          Next
+        </button> -->
+         <!-- Pagination Controls -->
+        <div class="flex justify-between items-center pt-4">
+          <div>
+            <label class="mr-2">Items per page:</label>
+            <select v-model="resultsPerPage" @change="searchProduct(searchQuery)" class="border px-2 py-1 rounded">
+              <option v-for="option in [5, 10, 20, 50]" :key="option" :value="option">{{ option }}</option>
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
@@ -51,8 +82,20 @@ export default {
       selectedFilter: '',
       priceFrom: null,
       priceTo: null,
-      orderBy:'asc'
+      orderBy:'asc',
+      resultsPerPage: 10, // How many items per page
+      currentPage: 1,     // Current page index (starts at 0)
+      totalResults: 0 ,
+      lastSearchKeyword: '', // Store previous search keyword
+      initialSearchDone: false, // Flag to know if initial search has been done
+    // Set this based on total count if the API returns it
+
     }
+  },
+    computed: {
+    totalPages() {
+      return Math.ceil(this.totalResults / this.resultsPerPage);
+    },
   },
   created() {
     // to run the search api not in every key stroke to wait for 500ms
@@ -108,7 +151,7 @@ export default {
         const backendMessage = error.response?.data?.detail?.response || "Something went wrong"
         console.error("Error:", backendMessage)
         // alert(backendMessage)
-        this.fetchData = [{ item_id: 2, title: 'shirt',price: 1000,platform: 'yahoo' },{item_id:3, title:'pant',price:2000,platform: 'rakuten'}]
+        // this.fetchData = [{ item_id: 2, title: 'shirt',price: 1000,platform: 'yahoo' },{item_id:3, title:'pant',price:2000,platform: 'rakuten'}]
       })
     },
     //search api for all filters
@@ -116,12 +159,16 @@ export default {
       if (this.selectedFilter === 'delArea' && this.searchQuery?.length == 1) {
         this.searchQuery = 0 + this.searchQuery
       }
+      const startOffset = (this.currentPage - 1) * this.resultsPerPage;
+  const isNewSearch = newQuery !== this.lastSearchKeyword;
+
       apiHeader().post('/items/search', {
         rakuten_query_parameters: {
           keyword: newQuery,
-
-          // page: "integer",
-          // hits: "integer (the number of items you want to see in the result)",
+...(!isNewSearch && this.searchQuery && { page: this.currentPage }),
+...(!isNewSearch && this.searchQuery && { hits: this.resultsPerPage, }),
+          // page: this.currentPage,
+          // hits: this.resultsPerPage,
 
           ...(this.selectedFilter === "sort" && { sort: this.orderBy == "asc" ? this.getSortValue('rakuten') : `-${this.getSortValue('rakuten')}` }),
           ...(this.selectedFilter === "shopCode" && this.searchQuery && { shopCode: this.searchQuery }),
@@ -145,15 +192,33 @@ export default {
           ...(this.selectedFilter === "condition" && { condition: this.searchQuery }),
           ...(this.selectedFilter === "delArea" && { delivery_area: this.searchQuery}),
           ...(this.selectedFilter === "delDay" && { delivery_day: this.searchQuery }),
-          ...(this.selectedFilter === "delDeadline" && { delivery_deadline: this.searchQuery })
+          ...(this.selectedFilter === "delDeadline" && { delivery_deadline: this.searchQuery }),
+          // results: this.resultsPerPage,
+          // start:  startOffset,
 
-           // results: "integer (how many results per page)",
+          ...(!isNewSearch && this.searchQuery && { results: this.resultsPerPage }),
+...(!isNewSearch && this.searchQuery && { start:  startOffset }),
+          //  results: "integer (how many results per page)",
           // start: "integer (use it for pagination. start + results)",
         },
         from_scheduler: false
       })
       .then(response => {
         this.fetchData = response.data.result;
+        
+         // Only set total count on initial search
+      if (isNewSearch) {
+        this.totalResults = response.data?.result?.length || 0;
+        // if(this.totalResults > 10) {
+        //   this.searchProduct(newQuery);
+        // }
+        this.lastSearchKeyword = newQuery;
+        this.currentPage = 1;
+      }
+            this.initialSearchDone = true;
+
+        // this.totalResults = response.data?.result?.length || 0; 
+        // this.fetchPaginatedData(newQuery);
         // api call to save the search keyword 
         this.saveSearchKeyword() ;
         console.log(this.fetchData)
@@ -164,11 +229,6 @@ export default {
         alert(backendMessage)
       })
     },
-
-    // applyFilter() {
-    //   if (!this.selectedFilter) return;
-    // },
-
     // get sort value for api payload
     getSortValue(platform) {
       console.log(this.searchQuery) ;
@@ -213,7 +273,19 @@ export default {
         console.error("Error:", backendMessage)
         // alert(backendMessage)
       })
-    }
+    },
+     prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.searchProduct(this.lastSearchKeyword);
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.searchProduct(this.lastSearchKeyword);
+      }
+    },
   }
 }
 </script>

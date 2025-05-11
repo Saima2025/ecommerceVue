@@ -1,9 +1,3 @@
-<!-- <script setup>
-import PageHeader from '../components/Header.vue'
-import Products from '../components/Products.vue'
-import FooterComponent from '../components/FooterComponent.vue'
-</script> -->
-
 <template>
   <main>
     <div class="bg-purple-300 w-full">
@@ -33,30 +27,12 @@ import FooterComponent from '../components/FooterComponent.vue'
               </div>
           </div>
       </div>
-      <!-- <div class="flex justify-center bg-purple-300 py-4 pb-10 w-full">
-          <div class="h-14 rounded-2xl relative" style="border: 1px solid black;padding:3px 6px 3px">
-              <div class="bg-black rounded-full relative top-10" style="padding: 3px"></div>
-          </div>
-      </div> -->
     </div>
-
-    <!-- <products/>
-
-    <footer-component/> -->
   </main>
 </template>
 
 <script>
 export default {
-  name: 'home'
-  // mounted(){
-  //   this.handlePageScroll()
-  // },
-  // methods:{
-  //   handlePageScroll(){
-  //     window.scrollTo(0, this.scrollposition);
-  //     this.scrollposition = window.pageYOffset;
-  //   }
-  // }
+  name: 'home',
 }
 </script>
