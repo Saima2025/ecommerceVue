@@ -120,9 +120,6 @@ export default {
       },
       immediate: true
     },
-    // selectedFilter() {
-    //   this.applyFilter();
-    // },
     priceFrom(){
       this.debouncedSearch('price');
     },
@@ -160,16 +157,13 @@ export default {
         this.searchQuery = 0 + this.searchQuery
       }
       const startOffset = (this.currentPage - 1) * this.resultsPerPage;
-  const isNewSearch = newQuery !== this.lastSearchKeyword;
+      const isNewSearch = newQuery !== this.lastSearchKeyword;
 
       apiHeader().post('/items/search', {
         rakuten_query_parameters: {
           keyword: newQuery,
-...(!isNewSearch && this.searchQuery && { page: this.currentPage }),
-...(!isNewSearch && this.searchQuery && { hits: this.resultsPerPage, }),
-          // page: this.currentPage,
-          // hits: this.resultsPerPage,
-
+          ...(!isNewSearch && this.searchQuery && { page: this.currentPage }),
+          ...(!isNewSearch && this.searchQuery && { hits: this.resultsPerPage, }),
           ...(this.selectedFilter === "sort" && { sort: this.orderBy == "asc" ? this.getSortValue('rakuten') : `-${this.getSortValue('rakuten')}` }),
           ...(this.selectedFilter === "shopCode" && this.searchQuery && { shopCode: this.searchQuery }),
           ...(this.selectedFilter === "genreId" && this.searchQuery && { genreId: this.searchQuery }),
@@ -193,13 +187,9 @@ export default {
           ...(this.selectedFilter === "delArea" && { delivery_area: this.searchQuery}),
           ...(this.selectedFilter === "delDay" && { delivery_day: this.searchQuery }),
           ...(this.selectedFilter === "delDeadline" && { delivery_deadline: this.searchQuery }),
-          // results: this.resultsPerPage,
-          // start:  startOffset,
 
           ...(!isNewSearch && this.searchQuery && { results: this.resultsPerPage }),
-...(!isNewSearch && this.searchQuery && { start:  startOffset }),
-          //  results: "integer (how many results per page)",
-          // start: "integer (use it for pagination. start + results)",
+          ...(!isNewSearch && this.searchQuery && { start:  startOffset }),
         },
         from_scheduler: false
       })
