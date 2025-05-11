@@ -85,7 +85,6 @@ export default {
     // to call the api when user filters any of the fields
     searchQuery: {
     handler(newQuery) {
-      console.log(newQuery) ;
         if (
           (typeof newQuery === 'string' && newQuery.trim() !== '') ||
           (typeof newQuery === 'number' && newQuery !== null && newQuery !== undefined) ||
@@ -107,9 +106,9 @@ export default {
     },
     selectedFilter() {
       this.fetchData = [],
-      this.currentPage= 1,  
-      this.totalResults= 0
-    }
+      this.currentPage= 1;
+      this.totalResults= 0;
+    },
   },
   methods: {
     // when component loads this api is being called
@@ -133,6 +132,7 @@ export default {
     },
     //search api for all filters
     searchProduct(newQuery) {
+      console.log('bbbbbbbbbbbb');
       if (this.selectedFilter === 'delArea' && this.searchQuery?.length == 1) {
         this.searchQuery = 0 + this.searchQuery
       }
@@ -179,9 +179,6 @@ export default {
          // Only set total count on initial search
       if (isNewSearch) {
         this.totalResults = response.data?.result?.length || 0;
-        // if(this.totalResults > 10) {
-        //   this.searchProduct(newQuery);
-        // }
         this.lastSearchKeyword = newQuery;
         this.currentPage = 1;
       }

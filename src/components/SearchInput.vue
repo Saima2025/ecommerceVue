@@ -199,8 +199,8 @@
             this.$emit('update:searchQuery', this.localSearch);
        },
        resetSearchKeyword() {
-        this.localSearch = null;
-        this.$emit('update:selectedFilter',this.localFilter)
+          this.localSearch = null;
+          this.$emit('update:selectedFilter',this.localFilter)
        }
     }
   }
