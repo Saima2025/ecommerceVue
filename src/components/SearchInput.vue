@@ -62,7 +62,7 @@
                 @input="handleInput"
                 :min="1"
                 :max="24"
-                placeholder="Enter a number"
+                placeholder="Enter a number(1-24)"
                 class="border px-4 py-2 rounded-md w-full"
             />
        </div>
@@ -71,7 +71,7 @@
                 type="number"
                 v-model.number="localPriceFrom"
                 @input="$emit('update:priceFrom', localPriceFrom)"
-                placeholder="Enter a number"
+                placeholder="Enter a price"
                 class="border px-4 py-2 rounded-md w-full"
             />
        </div>
@@ -80,7 +80,7 @@
                 type="number"
                 v-model.number="localPriceTo"
                 @input="$emit('update:priceTo', localPriceTo)"
-                placeholder="Enter a number"
+                placeholder="Enter a price"
                 class="border px-4 py-2 rounded-md w-full"
             />
        </div>
@@ -108,22 +108,19 @@
       <!-- Filter Dropdown -->
       <select
         v-model="localFilter"
-        @change="$emit('update:selectedFilter', localFilter)"
+        @change="resetSearchKeyword"
         class="border px-4 py-2 rounded-md w-full md:w-60"
       >
         <option disabled value="">Filter By</option>
         <option value="sort">Sort</option>
         <option value="shopCode">Shop Code</option>
         <option value="genreId">Genre Id</option>
-        <!-- <option value="page">Page</option> -->
-        <!-- <option value="hits">Hits</option> -->
         <option value="condition">Condition</option>
         <option value="imageFlag">Image Flag</option>
         <option value="shipFlag">Ship Overseas Flag</option>
         <option value="shipArea">Ship Overseas Area</option>
         <option value="brandId">Brand Id</option>
         <option value="sellerId">Seller Id</option>
-        <!-- <option value="price">Price</option> -->
         <option value="inStock">In Stock</option>
         <option value="isDiscounted">Is Discounted</option>
         <option value="shipping">Shipping</option>
@@ -201,6 +198,10 @@
             } 
             this.$emit('update:searchQuery', this.localSearch);
        },
+       resetSearchKeyword() {
+        this.localSearch = null;
+        this.$emit('update:selectedFilter',this.localFilter)
+       }
     }
   }
   </script>

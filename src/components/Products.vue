@@ -28,37 +28,14 @@
             </router-link>
           </div>
         </div>
-        <!-- <button @click="previousPage" :disabled="currentPage === 0">Previous</button>
-        <button @click="nextPage" :disabled="(currentPage + 1) * resultsPerPage >= totalResults">
-          Next
-        </button> -->
-         <!-- Pagination Controls -->
-        <div class="flex justify-between items-center pt-4">
-          <div>
-            <label class="mr-2">Items per page:</label>
-            <select v-model="resultsPerPage" @change="searchProduct(searchQuery)" class="border px-2 py-1 rounded">
-              <option v-for="option in [5, 10, 20, 50]" :key="option" :value="option">{{ option }}</option>
-            </select>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <button
-              @click="prevPage"
-              :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span>Page {{ currentPage }} of {{ totalPages }}</span>
-            <button
-              @click="nextPage"
-              :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        <PaginationControls
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          :resultsPerPage="resultsPerPage"
+          @update:resultsPerPage="val => { resultsPerPage = val; searchProduct(searchQuery); }"
+          @prev-page="prevPage"
+          @next-page="nextPage"
+        />
       </div>
     </div>
   </div>
@@ -68,12 +45,12 @@
 import { apiHeader } from '../services/api'
 import SearchInput from './SearchInput.vue'
 import debounce  from  'lodash/debounce'
-
-// const searchQuery = ref('')
+import PaginationControls from './PaginationControls.vue';
 
 export default {
   components: {
-    SearchInput
+    SearchInput,
+    PaginationControls,
   },
   data() {
     return {
@@ -88,11 +65,10 @@ export default {
       totalResults: 0 ,
       lastSearchKeyword: '', // Store previous search keyword
       initialSearchDone: false, // Flag to know if initial search has been done
-    // Set this based on total count if the API returns it
 
     }
   },
-    computed: {
+  computed: {
     totalPages() {
       return Math.ceil(this.totalResults / this.resultsPerPage);
     },
@@ -128,8 +104,12 @@ export default {
     },
     orderBy() {
       this.debouncedSearch(this.searchQuery) ;
+    },
+    selectedFilter() {
+      this.fetchData = [],
+      this.currentPage= 1,  
+      this.totalResults= 0
     }
-
   },
   methods: {
     // when component loads this api is being called
@@ -157,7 +137,7 @@ export default {
         this.searchQuery = 0 + this.searchQuery
       }
       const startOffset = (this.currentPage - 1) * this.resultsPerPage;
-      const isNewSearch = newQuery !== this.lastSearchKeyword;
+      const isNewSearch = newQuery !== this.lastSearchKeyword;       
 
       apiHeader().post('/items/search', {
         rakuten_query_parameters: {
@@ -205,13 +185,9 @@ export default {
         this.lastSearchKeyword = newQuery;
         this.currentPage = 1;
       }
-            this.initialSearchDone = true;
-
-        // this.totalResults = response.data?.result?.length || 0; 
-        // this.fetchPaginatedData(newQuery);
+        this.initialSearchDone = true;
         // api call to save the search keyword 
         this.saveSearchKeyword() ;
-        console.log(this.fetchData)
       })
       .catch(error => {
         const backendMessage = error.response?.data?.response || "Something went wrong"
