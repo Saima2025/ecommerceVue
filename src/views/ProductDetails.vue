@@ -71,9 +71,6 @@ import FooterComponent from '../components/Footer.vue'
 import { apiHeader } from '../services/api' 
 
 export default {
-    activated() {
-        window.scrollTo(0, 0);
-    },
     data(){
         return{
             currentImg : 0,

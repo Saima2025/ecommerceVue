@@ -132,7 +132,6 @@ export default {
     },
     //search api for all filters
     searchProduct(newQuery) {
-      console.log('bbbbbbbbbbbb');
       if (this.selectedFilter === 'delArea' && this.searchQuery?.length == 1) {
         this.searchQuery = 0 + this.searchQuery
       }

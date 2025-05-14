@@ -9,7 +9,7 @@
         <div class="bg-purple-800 py-32 PX-4">
             <div class="max-w-6xl gap-6 mx-auto grid grid-cols-1 md:grid-cols-9">
                 <div class="md:col-span-3 py-3 space-y-4">
-                    <div class="text-2xl font-bold text-gray-100">Noble's Shop</div>
+                    <div class="text-2xl font-bold text-gray-100">Saima's Shop</div>
                     <div class="text-gray-300 w-60 pr-0">We sell only but quality and first grade Hoddies, Joggers, Shorts and lot more.</div>
                 </div>
                 <div class="md:col-span-2 py-3 space-y-4">
